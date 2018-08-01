@@ -142,7 +142,7 @@ class App extends Component {
 	}
 	playLoop(){
 		this.fillBeat();
-		this.midiSounds.startPlayLoop(this.beats, 120, 1/8); // starts loop /bpm
+		this.midiSounds.startPlayLoop(this.beats, 120, 1/16); // starts loop /bpm
 	}
 	stopLoop(){
 		this.midiSounds.stopPlayLoop();  //stop
@@ -153,9 +153,15 @@ class App extends Component {
 		this.setState({tracks:a});
 		this.fillBeat();
 	}
-render() {
-    return (
-    <div className="App">
+	render() {
+		return (
+			
+			<div className="App">
+			<button onClick={() =>
+			{localStorage.clear()
+			window.location.reload()}}>Logout</button>
+
+		<h1 className="h3 mb-3 font-weight-normal">Co-Lab</h1>
 		<table align='center'>
 			<tbody>
 				<tr>
