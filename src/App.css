@@ -1,5 +1,28 @@
+body{
+	background-image: url(https://forum.affinity.serif.com/uploads/monthly_2017_08/Example.jpg.3198f1e9c7c7a5038e4179d6abc47404.jpg);
+	background-position: right top;
+	background-repeat: repeat-x;
+	margin-left: 2em;
+	position: relative;
+	background-size: cover;
+	
+	
+	
+}
+
 .App {
-  text-align: center;
+	background-image: url("/Users/brettshearin/workspace/collab-capstone/retro-80s-vhs-tape-video-game-intro-landscape-vector-arcade-wireframe-terrain-4k_bgfym6on__F0002.png");
+	height: auto;
+	width: auto;
+	font-family: 'Orbitron', sans-serif;
+	color: rgb(223, 36, 195);
+	text-shadow: 1px 1px 2px rgb(249, 249, 249), 0 0 50px blue, 0 0 25px rgb(252, 252, 252);
+	
+}
+
+
+.App {
+	text-align: center;
 }
 
 .App-logo {
@@ -20,28 +43,35 @@
 .App-intro {
   font-size: large;
 }
-checkbox {
-	width: 28px;
-	height: 28px;
-	background: #fcfff4;
-
-	background: -webkit-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	background: -moz-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	background: -o-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	background: -ms-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	background: linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfff4', endColorstr='#b3bead',GradientType=0 );
-	margin: 20px auto;
-
-	-webkit-border-radius: 50px;
-	-moz-border-radius: 50px;
-	border-radius: 50px;
-
-	-webkit-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-	-moz-box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-	box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0,0,0,0.5);
-	position: relative;
+input[ type = "checkbox"]{
+  width: 70px;
+	height: 40px;
+	zoom: .5;
+	-webkit-appearance: none;
+	background: rgb(0, 0, 0);
+	border-radius: 5px;
+	border: 2px solid #555
 }
+input[ type = "checkbox"]:checked{
+	background: rgb(223, 36, 195);
+
+}
+
+select{
+	color: rgb(223, 36, 195);
+	font-size: 1em;
+	
+}
+
+select, input[type="color" ][list] {
+	background-color: rgb(0, 0, 0);
+	border-color: rgb(0, 0, 0);
+}
+
+h1{
+
+}
+
 
 
 
