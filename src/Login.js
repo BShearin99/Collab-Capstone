@@ -1,5 +1,7 @@
 import APIManager from "./APIManager"
 import React, { Component } from "react"
+import { Button, Checkbox, Form } from 'semantic-ui-react'
+
 
 export default class Login extends Component {
     state = {
@@ -40,7 +42,7 @@ export default class Login extends Component {
         return (
             <div className="login">
             
-            <form onSubmit={this.handleLogin}>
+            <Form onSubmit={this.handleLogin}>
             <h1 className="h3 mb-3 font-weight-normal">Welcome To Co-Lab</h1>
                 <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
                 <label htmlFor="inputEmail">
@@ -64,13 +66,13 @@ export default class Login extends Component {
                     id="userName"
                     placeholder="Enter UserName"
                     required="" />
-                <button type="submit"onClick={() => window.location.reload()
+                <Button type="submit"onClick={() => window.location.reload()
                 }>
                 Sign In
-                </button>
+                </Button>
                 <br></br>
                 <input type="checkbox" name="checkbox" /> <label>REMEMBER ME</label>
-            </form>
+            </Form>
             </div>
         )
     }
