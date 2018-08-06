@@ -68,9 +68,111 @@ select, input[type="color" ][list] {
 	border-color: rgb(0, 0, 0);
 }
 
-h1{
+/* NEW STUFF --> */
 
+
+
+
+
+
+
+
+filterwrapper {
+	position: absolute;
+	z-index: -1;
+	pointer-events: none;
+	opacity: 0;
 }
+
+.svgtext {
+	display: block;
+	position: relative;
+	overflow: hidden;
+	margin: 0 auto;
+}
+
+.intro {
+	margin-bottom: 3em;
+}
+
+hr {
+	height: 0;
+	border-bottom: solid #cccccc 1px;
+}
+
+.glitch-filter-example {
+	display: block;
+	position: relative;
+	text-align: center;
+	margin: 0;
+	padding: 4em 0 2em;
+	min-width: 490px;
+}
+
+.glitch-filter-example__heading {
+	margin: 0;
+	margin-bottom: 1em;
+	padding: 0;
+	display: block;
+	position: relative;
+}
+
+.glitch-filter-example__filtered-text {
+	filter: url(#filter);
+	fill: white;
+	font-family: 'Share Tech Mono', sans-serif;
+	font-size: 100px;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	display: block;
+}
+
+.top-r,
+.bot-r,
+.top-g,
+.bot-g {
+	stroke: #ffffff;
+}
+
+.top-r {
+	stroke-width: 100px;
+	animation: topani 3.5s linear infinite;
+}
+
+.bot-r {
+	stroke-width: 100px;
+	animation: botani 4s linear infinite;
+}
+
+.top-g {
+	stroke-width: 50px;
+	animation: topani 4s linear reverse infinite;
+}
+
+.bot-g {
+	stroke-width: 50%;
+	animation: botani 3.5s linear reverse infinite;
+}
+
+/* mixin createRandomKeyframes( $numberOfKeys ) {
+	$delta: round(100/$numberOfKeys);
+	
+	@for $i from 1 through $numberOfKeys {
+			$time: ($i*$delta - random($delta)) +'%';
+			#{$time} {
+					stroke-width: random(200) + px;
+			}
+	}
+} */
+
+/* @keyframes topani {
+	@include {createRandomKeyframes( 10 + random(10) )}
+}
+
+@keyframes botani {
+	@include createRandomKeyframes( 10 + random(10) );
+} */
 
 
 

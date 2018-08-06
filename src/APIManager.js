@@ -11,14 +11,34 @@ const Database = Object.create({}, {
 
     getSongData:{
     value: (id) => {
-        return fetch(`http://localhost:5002/Songs/${id}`)
+        return fetch(`http://localhost:5002/songs/${id}`)
         .then(e => e.json())
         // .then((response) => {
         //     console.log(response)
         // return response.sequence.sequence
         // })
     }
+    },
+
+    saveSong:{
+        value: (newSong) => {
+            // console.log("id", id)
+            return fetch("http://localhost:5002/songs/",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newSong)
+        }).then(e => e.json())
+        // .then(() => {
+        //     return fetch(`http://localhost:5002/songs/${id}`)
+        // })
+        // .then(a => a.json())
     }
+},
+
+
+    
 
 
 
