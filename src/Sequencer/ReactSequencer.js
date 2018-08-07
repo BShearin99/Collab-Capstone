@@ -316,8 +316,9 @@ class App extends Component {
 		this.setState({tracks:a});
 		this.fillBeat();
 	}
-
+		
 	loadSong = () => {
+		if (id === currentUserId){
 		console.log(APIManager.getSongData("19"))
 		APIManager.getSongData("19")
 		.then((Song)=>{
@@ -331,6 +332,8 @@ class App extends Component {
 			this.setState({tracks:songArray})
 		})
 	}
+	}
+
 	loadSong2 = () => {
 		console.log(APIManager.getSongData("30"))
 		APIManager.getSongData("30")
@@ -352,7 +355,7 @@ class App extends Component {
 		let userObject = JSON.parse(localStorage.getItem("credentials"))
 		let id = userObject.currentUserId
 		const newSong = { sequence: this.state.tracks, 
-			// userId: id 
+			userId: id 
 		}
 		console.log(userObject)
         APIManager.saveSong(newSong).then(e => console.log(e)) 
