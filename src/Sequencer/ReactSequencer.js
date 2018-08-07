@@ -318,8 +318,22 @@ class App extends Component {
 	}
 
 	loadSong = () => {
-		console.log(APIManager.getSongData("1"))
-		APIManager.getSongData("1")
+		console.log(APIManager.getSongData("19"))
+		APIManager.getSongData("19")
+		.then((Song)=>{
+			console.log(Song.sequence)
+			const songArray = []
+			for (const key in Song.sequence){
+				console.log(Song.sequence[key])
+				songArray.push(Song.sequence[key])
+			}   
+			console.log(songArray)
+			this.setState({tracks:songArray})
+		})
+	}
+	loadSong2 = () => {
+		console.log(APIManager.getSongData("30"))
+		APIManager.getSongData("30")
 		.then((Song)=>{
 			console.log(Song.sequence)
 			const songArray = []
@@ -337,7 +351,9 @@ class App extends Component {
 		// APIManager.getSongData("2")
 		let userObject = JSON.parse(localStorage.getItem("credentials"))
 		let id = userObject.currentUserId
-		const newSong = { sequence: this.state.tracks, userId: id }
+		const newSong = { sequence: this.state.tracks, 
+			// userId: id 
+		}
 		console.log(userObject)
         APIManager.saveSong(newSong).then(e => console.log(e)) 
 	}
@@ -347,6 +363,7 @@ class App extends Component {
 			
 			<div className="App">
 			<button onClick={() => this.loadSong()}>Load Song</button>
+			<button onClick={() => this.loadSong2()}>Load Song 2</button>
 			<button onClick={() => this.saveSongs()}>Save Song</button>
 			<button onClick={() =>
 			{localStorage.clear()
