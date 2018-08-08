@@ -5,6 +5,7 @@ import Tone from "tone";
 import TextGlitch from 'react-text-glitch'
 import MIDISounds from 'midi-sounds-react';
 import APIManager from "../APIManager"
+import DropDown from "./dropDownPopulation"
 
 class App extends Component {
 	constructor(props) {
@@ -56,7 +57,9 @@ class App extends Component {
 
 
 			],
-			newSong:{}
+			userSongs:[]
+
+			
 
 		};
 		this.state.data=[]
@@ -64,6 +67,13 @@ class App extends Component {
 	}
 	componentDidMount() {
 		this.setState({ initialized: 1 });
+		let userObject = JSON.parse(localStorage.getItem("credentials"))
+		let id = userObject.currentUserId
+		APIManager.getUserSongData(id)
+		.then((Song)=>{
+			this.setState({userSongs : Song})
+			
+		})
 	}
 	onSelectInstrument(e){
 		var list=e.target;
@@ -92,6 +102,45 @@ class App extends Component {
 			return this.items;
 		}
 	}
+	// {console.log(this.APIManager.getSongData())}
+
+
+
+
+
+	createSelectSongs(){
+		if (true){
+			if(true){
+				this.items1 = [];
+				let userObject = JSON.parse(localStorage.getItem("credentials"))
+				let id = userObject.currentUserId
+				const APISong = APIManager.getUserSongData(id)
+				APISong.then((Song)=>{
+					console.log(Song)
+					console.log(Song[1].songId)
+					for (let i =0; i < Song.length;i++){
+						console.log(i)
+						this.items1.push(<option key={i} value={Song[i].SongId}>{Song[i].SongId}</option>)
+						console.log(this.items1)
+					}
+				})
+			}
+			return this.items1;
+		}
+	}
+	onSelectSong(e){
+		let list=e.target;
+		let n = list.options[list.selectedIndex].getAttribute("value");		
+		this.APIManager.getUserSongData();
+		this.APIManager.getUserSongData(() => {
+			this.setState({
+				loadedSongs: n
+			});
+			});
+	}
+
+
+
 	playTestInstrument() {
 		this.midiSounds.playChordNow(this.state.selectedInstrument, [60], 2.5);
 	}
@@ -303,6 +352,12 @@ class App extends Component {
 			this.beats[i]=beat;
 		}
 	}
+	
+handleChange(event){
+this.setState({value: event.target.loadedSongs})
+}
+
+
 	playLoop(){
 		this.fillBeat();
 		this.midiSounds.startPlayLoop(this.beats, 120, 1/16); // starts loop /bpm
@@ -316,50 +371,50 @@ class App extends Component {
 		this.setState({tracks:a});
 		this.fillBeat();
 	}
+	saveSongs = () => {
+	
+		let userObject = JSON.parse(localStorage.getItem("credentials"))
+		let userId = userObject.currentUserId
+		const newSong = { sequence: this.state.tracks,  }
+		console.log(userObject)
+		APIManager.saveSong(newSong)
+		.then((e) => {
+		console.log(e.id)
+		let songStuff = {
+			userId:userId,
+			songId: e.id
+		}
+		APIManager.joinSongs(songStuff)
+		.then(console.log(songStuff))
+	}) 
+		}
 		
 	loadSong = () => {
-		if (id === currentUserId){
-		console.log(APIManager.getSongData("19"))
-		APIManager.getSongData("19")
-		.then((Song)=>{
-			console.log(Song.sequence)
-			const songArray = []
-			for (const key in Song.sequence){
-				console.log(Song.sequence[key])
-				songArray.push(Song.sequence[key])
-			}   
-			console.log(songArray)
-			this.setState({tracks:songArray})
-		})
-	}
-	}
-
-	loadSong2 = () => {
-		console.log(APIManager.getSongData("30"))
-		APIManager.getSongData("30")
-		.then((Song)=>{
-			console.log(Song.sequence)
-			const songArray = []
-			for (const key in Song.sequence){
-				console.log(Song.sequence[key])
-				songArray.push(Song.sequence[key])
-			}   
-			console.log(songArray)
-			this.setState({tracks:songArray})
-		})
-	}
-
-	saveSongs = () => {
-		// console.log(APIManager.getSongData("2"))
-		// APIManager.getSongData("2")
 		let userObject = JSON.parse(localStorage.getItem("credentials"))
 		let id = userObject.currentUserId
-		const newSong = { sequence: this.state.tracks, 
-			userId: id 
-		}
-		console.log(userObject)
-        APIManager.saveSong(newSong).then(e => console.log(e)) 
+		APIManager.getUserSongData(id)
+		.then((Song)=>{
+			console.log(Song)
+			
+		})
 	}
+	// }
+
+	loadSong2 = (songId) => {
+		console.log("song Id", songId)
+		APIManager.getSongData(songId)
+		.then((Song)=>{
+			console.log("sequence",Song)
+			const songArray = []
+			for (const key in Song.sequence){
+				console.log("Sequence key",Song.sequence[key])
+				songArray.push(Song.sequence[key])
+			}   
+			console.log("song array", songArray)
+			this.setState({tracks:songArray})
+		})
+	}
+
 	render() {
 		
 		return (
@@ -367,6 +422,7 @@ class App extends Component {
 			<div className="App">
 			<button onClick={() => this.loadSong()}>Load Song</button>
 			<button onClick={() => this.loadSong2()}>Load Song 2</button>
+			<DropDown loadSong = {this.loadSong2} userSongArray = {this.state.userSongs}/>
 			<button onClick={() => this.saveSongs()}>Save Song</button>
 			<button onClick={() =>
 			{localStorage.clear()
