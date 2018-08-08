@@ -10,13 +10,19 @@ const Database = Object.create({}, {
     },
 
     getSongData:{
-    value: (id) => {
-        return fetch(`http://localhost:5002/songs/${id}`)
+        value: (id) => {
+            console.log("id", id)
+            return fetch (`http://localhost:5002/songs/${id}`)
+            .then(e => e.json())
+        }
+    },
+
+    getUserSongData:{
+    value: (userId) => {
+        console.log(userId)
+        return fetch(`http://localhost:5002/UserSongs?userId=${+userId}&_expand=song`)
         .then(e => e.json())
-        // .then((response) => {
-        //     console.log(response)
-        // return response.sequence.sequence
-        // })
+        
     }
     },
 
@@ -37,8 +43,17 @@ const Database = Object.create({}, {
     }
 },
 
-
-    
+joinSongs:{
+value: (songStuff) => {
+    return fetch ("http://localhost:5002/userSongs/",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(songStuff)
+        }).then(e => e.json())
+    }
+}
 
 
 
