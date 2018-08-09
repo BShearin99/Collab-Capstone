@@ -128,17 +128,7 @@ class App extends Component {
 			return this.items1;
 		}
 	}
-	onSelectSong(e){
-		let list=e.target;
-		let n = list.options[list.selectedIndex].getAttribute("value");		
-		this.APIManager.getUserSongData();
-		this.APIManager.getUserSongData(() => {
-			this.setState({
-				loadedSongs: n
-			});
-			});
-	}
-
+	
 
 
 	playTestInstrument() {
@@ -371,6 +361,9 @@ this.setState({value: event.target.loadedSongs})
 		this.setState({tracks:a});
 		this.fillBeat();
 	}
+	deleteSongs = () => {
+
+	}
 	saveSongs = () => {
 	
 		let userObject = JSON.parse(localStorage.getItem("credentials"))
@@ -420,8 +413,7 @@ this.setState({value: event.target.loadedSongs})
 		return (
 			
 			<div className="App">
-			<button onClick={() => this.loadSong()}>Load Song</button>
-			<button onClick={() => this.loadSong2()}>Load Song 2</button>
+			
 			<DropDown loadSong = {this.loadSong2} userSongArray = {this.state.userSongs}/>
 			<button onClick={() => this.saveSongs()}>Save Song</button>
 			<button onClick={() =>
@@ -1067,8 +1059,8 @@ this.setState({value: event.target.loadedSongs})
 		<p>
 			<button onClick={this.playLoop.bind(this)}>Play loop</button>
 			<button onClick={this.stopLoop.bind(this)}>Stop loop</button>
-			<p><select value={this.state.selectedInstrument} onChange={this.onSelectInstrument.bind(this)}>{this.createSelectItemsInt()}</select></p>
-		<p><button onClick={this.playTestInstrument.bind(this)} disabled={!this.state.cached}>Play</button></p>
+			{/* <p><select value={this.state.selectedInstrument} onChange={this.onSelectInstrument.bind(this)}>{this.createSelectItemsInt()}</select></p> */}
+		{/* <p><button onClick={this.playTestInstrument.bind(this)} disabled={!this.state.cached}>Play</button></p> */}
 		</p>
 		<input onChange={this.handleFieldChange} type="text"
                     id="BPM"

@@ -9,6 +9,21 @@ const Database = Object.create({}, {
         }
     },
 
+
+deleteSong:{
+    value: (id) => {
+        return fetch (`http://localhost:5002/songs/${id}`,{
+        method: "DELETE",
+    })
+    .then((Response) => {
+        return fetch (`http://localhost:5002/songs/${id}`).then((Response) => {
+            return Response.json()
+    })
+    })
+}},
+
+
+
     getSongData:{
         value: (id) => {
             console.log("id", id)
