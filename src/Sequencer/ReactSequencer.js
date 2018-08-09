@@ -128,7 +128,17 @@ class App extends Component {
 			return this.items1;
 		}
 	}
-	
+	onSelectSong(e){
+		let list=e.target;
+		let n = list.options[list.selectedIndex].getAttribute("value");		
+		this.APIManager.getUserSongData();
+		this.APIManager.getUserSongData(() => {
+			this.setState({
+				loadedSongs: n
+			});
+			});
+	}
+
 
 
 	playTestInstrument() {
@@ -414,8 +424,8 @@ this.setState({value: event.target.loadedSongs})
 			
 			<div className="App">
 			
-			<DropDown loadSong = {this.loadSong2} userSongArray = {this.state.userSongs}/>
-			<button onClick={() => this.saveSongs()}>Save Song</button>
+			<DropDown loadSong = {this.loadSong2} userSongArray = {this.state.userSongs} tracks = {this.state.tracks}/>
+			<button onClick={() => this.saveSongs()}>Save New Song</button>
 			<button onClick={() =>
 			{localStorage.clear()
 			window.location.reload()}}>Logout</button>

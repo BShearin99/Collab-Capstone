@@ -22,6 +22,19 @@ deleteSong:{
     })
 }},
 
+editSong:{
+    value: (id, editedSong) => {
+        // console.log("id", id)
+        return fetch(`http://localhost:5002/songs/${id}`,{
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(editedSong)
+    }).then(e => e.json())
+
+}},
+
 
 
     getSongData:{
@@ -51,10 +64,7 @@ deleteSong:{
             },
             body: JSON.stringify(newSong)
         }).then(e => e.json())
-        // .then(() => {
-        //     return fetch(`http://localhost:5002/songs/${id}`)
-        // })
-        // .then(a => a.json())
+    
     }
 },
 
