@@ -1,13 +1,14 @@
 import APIManager from "./APIManager"
 import React, { Component } from "react"
 import { Button, Checkbox, Form } from 'semantic-ui-react'
+import './App.css';
 
 
 export default class Login extends Component {
     state = {
-        email: " ",
+        
         userName: " ",
-        password: " "
+        
     }
 
     handleFieldChange = (evt) => {
@@ -26,8 +27,6 @@ export default class Login extends Component {
             localStorage.setItem(
                 "credentials",
                 JSON.stringify({
-                    email: this.state.email,
-                    password: this.state.password,
                     userName: this.state.userName,
                     currentUserId: taco[0].id
                     
@@ -42,10 +41,10 @@ export default class Login extends Component {
         return (
             <div className="login">
             
-            <Form onSubmit={this.handleLogin}>
+            <form onSubmit={this.handleLogin}>
             <h1 className="h3 mb-3 font-weight-normal">Welcome To Co-Lab</h1>
                 <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
-                <label htmlFor="inputEmail">
+                {/* <label htmlFor="inputEmail">
                     Email address:
                 </label>
                 <input onChange={this.handleFieldChange} type="email"
@@ -58,7 +57,7 @@ export default class Login extends Component {
                 <input onChange={this.handleFieldChange} type="password"
                     id="password"
                     placeholder="Password"
-                    required="" />
+                    required="" /> */}
                 <label htmlFor="inputUserName">
                     UserName:
                 </label>
@@ -66,13 +65,13 @@ export default class Login extends Component {
                     id="userName"
                     placeholder="Enter UserName"
                     required="" />
-                <Button type="submit"onClick={() => window.location.reload()
+                <button type="submit"onClick={() => window.location.reload()
                 }>
                 Sign In
-                </Button>
+                </button>
                 <br></br>
-                <input type="checkbox" name="checkbox" /> <label>REMEMBER ME</label>
-            </Form>
+                {/* <input type="checkbox" name="checkbox" /> <label>REMEMBER ME</label> */}
+            </form>
             </div>
         )
     }

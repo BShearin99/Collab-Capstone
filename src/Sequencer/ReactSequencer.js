@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 // import logo from './logo.svg';
 import '../App.css';
 import Tone from "tone";
-import TextGlitch from 'react-text-glitch'
 import MIDISounds from 'midi-sounds-react';
 import APIManager from "../APIManager"
 import DropDown from "./dropDownPopulation"
@@ -26,6 +25,9 @@ class App extends Component {
 			drum12:80,
 			drum13:90,
 			drum14:100,
+			drum15:110,
+			drum16:120,
+			drum17:130,
 			
 
 			cached:true,
@@ -53,11 +55,17 @@ class App extends Component {
 				,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 				,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 				,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+				,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+				,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+				,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
 
 
 
 			],
-			userSongs:[]
+			userSongs:[],
+			name:"",
+			bpm:[],
 
 			
 
@@ -75,6 +83,13 @@ class App extends Component {
 			
 		})
 	}
+	handleFieldChange = (evt) => {
+		const stateToChange = {}
+		stateToChange[evt.target.id] = evt.target.value
+		this.setState(stateToChange)
+
+	}
+	
 	onSelectInstrument(e){
 		var list=e.target;
 		let n = list.options[list.selectedIndex].getAttribute("value");
@@ -317,6 +332,42 @@ class App extends Component {
 												me.fillBeat();
 												});
 											}
+											onSelectDrum15(e){
+												let list=e.target;
+												let n = list.options[list.selectedIndex].getAttribute("value");		
+												this.midiSounds.cacheDrum(n);
+												let me=this;
+												this.midiSounds.player.loader.waitLoad(function(){
+													me.setState({
+														drum15: n
+													});
+													me.fillBeat();
+													});
+												}
+												onSelectDrum16(e){
+													let list=e.target;
+													let n = list.options[list.selectedIndex].getAttribute("value");		
+													this.midiSounds.cacheDrum(n);
+													let me=this;
+													this.midiSounds.player.loader.waitLoad(function(){
+														me.setState({
+															drum16: n
+														});
+														me.fillBeat();
+														});
+													}
+													onSelectDrum17(e){
+														let list=e.target;
+														let n = list.options[list.selectedIndex].getAttribute("value");		
+														this.midiSounds.cacheDrum(n);
+														let me=this;
+														this.midiSounds.player.loader.waitLoad(function(){
+															me.setState({
+																drum17: n
+															});
+															me.fillBeat();
+															});
+														}
 	createSelectItems() {
 		if (this.midiSounds) {
 			if (!(this.items)) {
@@ -346,6 +397,10 @@ class App extends Component {
 			if(this.state.tracks[12][i]){drums.push(this.state.drum12)}
 			if(this.state.tracks[13][i]){drums.push(this.state.drum13)}
 			if(this.state.tracks[14][i]){drums.push(this.state.drum14)}
+			if(this.state.tracks[15][i]){drums.push(this.state.drum15)}
+			if(this.state.tracks[16][i]){drums.push(this.state.drum16)}
+			if(this.state.tracks[17][i]){drums.push(this.state.drum17)}
+
 
 
 			let beat=[drums,[]];
@@ -361,6 +416,7 @@ this.setState({value: event.target.loadedSongs})
 	playLoop(){
 		this.fillBeat();
 		this.midiSounds.startPlayLoop(this.beats, 120, 1/16); // starts loop /bpm
+		console.log(this.state.bpm)
 	}
 	stopLoop(){
 		this.midiSounds.stopPlayLoop();  //stop
@@ -378,14 +434,16 @@ this.setState({value: event.target.loadedSongs})
 	
 		let userObject = JSON.parse(localStorage.getItem("credentials"))
 		let userId = userObject.currentUserId
-		const newSong = { sequence: this.state.tracks,  }
+		const newSong = { sequence: this.state.tracks, name: this.state.name  }
 		console.log(userObject)
 		APIManager.saveSong(newSong)
 		.then((e) => {
 		console.log(e.id)
+		console.log(this.state.name)
 		let songStuff = {
 			userId:userId,
-			songId: e.id
+			songId: e.id,
+			name: this.state.name
 		}
 		APIManager.joinSongs(songStuff)
 		.then(console.log(songStuff))
@@ -424,7 +482,7 @@ this.setState({value: event.target.loadedSongs})
 			
 			<div className="App">
 			
-			<DropDown loadSong = {this.loadSong2} userSongArray = {this.state.userSongs} tracks = {this.state.tracks}/>
+			<DropDown loadSong = {this.loadSong2} userSongArray = {this.state.userSongs} tracks = {this.state.tracks} name ={this.state.name}/>
 			<button onClick={() => this.saveSongs()}>Save New Song</button>
 			<button onClick={() =>
 			{localStorage.clear()
@@ -491,7 +549,7 @@ this.setState({value: event.target.loadedSongs})
 					<td><input type="checkbox" checked={this.state.tracks[1][17]} onChange={(e)=>this.toggleDrum(1,17)} /></td>
 					<td><input type="checkbox" checked={this.state.tracks[1][18]} onChange={(e)=>this.toggleDrum(1,18)} /></td>
 					<td><input type="checkbox" checked={this.state.tracks[1][19]} onChange={(e)=>this.toggleDrum(1,19)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[1][21]} onChange={(e)=>this.toggleDrum(1,20)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[1][20]} onChange={(e)=>this.toggleDrum(1,20)} /></td>
 					<td><input type="checkbox" checked={this.state.tracks[1][21]} onChange={(e)=>this.toggleDrum(1,21)} /></td>
 					<td><input type="checkbox" checked={this.state.tracks[1][22]} onChange={(e)=>this.toggleDrum(1,22)} /></td>
 					<td><input type="checkbox" checked={this.state.tracks[1][23]} onChange={(e)=>this.toggleDrum(1,23)} /></td>
@@ -501,7 +559,7 @@ this.setState({value: event.target.loadedSongs})
 					<td><input type="checkbox" checked={this.state.tracks[1][27]} onChange={(e)=>this.toggleDrum(1,27)} /></td>
 					<td><input type="checkbox" checked={this.state.tracks[1][28]} onChange={(e)=>this.toggleDrum(1,28)} /></td>
 					<td><input type="checkbox" checked={this.state.tracks[1][29]} onChange={(e)=>this.toggleDrum(1,29)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[1][31]} onChange={(e)=>this.toggleDrum(1,30)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[1][30]} onChange={(e)=>this.toggleDrum(1,30)} /></td>
 					<td><input type="checkbox" checked={this.state.tracks[1][31]} onChange={(e)=>this.toggleDrum(1,31)} /></td>					
 				</tr>
 				<tr>
@@ -960,109 +1018,109 @@ this.setState({value: event.target.loadedSongs})
 					<td><input type="checkbox" checked={this.state.tracks[14][31]} onChange={(e)=>this.toggleDrum(14,31)} /></td>					
 				</tr>
 				<tr>
-					<td><select value={this.state.selectedInstrument} onChange={this.onSelectInstrument.bind(this)}>{this.createSelectItemsInt()}</select></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][0]} onChange={(e)=>this.toggleDrum(4,0)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][1]} onChange={(e)=>this.toggleDrum(4,1)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][2]} onChange={(e)=>this.toggleDrum(4,2)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][3]} onChange={(e)=>this.toggleDrum(4,3)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][4]} onChange={(e)=>this.toggleDrum(4,4)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][5]} onChange={(e)=>this.toggleDrum(4,5)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][6]} onChange={(e)=>this.toggleDrum(4,6)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][7]} onChange={(e)=>this.toggleDrum(4,7)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][8]} onChange={(e)=>this.toggleDrum(4,8)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][9]} onChange={(e)=>this.toggleDrum(4,9)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][10]} onChange={(e)=>this.toggleDrum(4,10)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][11]} onChange={(e)=>this.toggleDrum(4,11)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][12]} onChange={(e)=>this.toggleDrum(4,12)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][13]} onChange={(e)=>this.toggleDrum(4,13)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][14]} onChange={(e)=>this.toggleDrum(4,14)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][15]} onChange={(e)=>this.toggleDrum(4,15)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][16]} onChange={(e)=>this.toggleDrum(4,16)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][17]} onChange={(e)=>this.toggleDrum(4,17)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][18]} onChange={(e)=>this.toggleDrum(4,18)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][19]} onChange={(e)=>this.toggleDrum(4,19)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][20]} onChange={(e)=>this.toggleDrum(4,20)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][21]} onChange={(e)=>this.toggleDrum(4,21)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][22]} onChange={(e)=>this.toggleDrum(4,22)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][23]} onChange={(e)=>this.toggleDrum(4,23)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][24]} onChange={(e)=>this.toggleDrum(4,24)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][25]} onChange={(e)=>this.toggleDrum(4,25)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][26]} onChange={(e)=>this.toggleDrum(4,26)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][27]} onChange={(e)=>this.toggleDrum(4,27)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][28]} onChange={(e)=>this.toggleDrum(4,28)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][29]} onChange={(e)=>this.toggleDrum(4,29)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][30]} onChange={(e)=>this.toggleDrum(4,30)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][31]} onChange={(e)=>this.toggleDrum(4,31)} /></td>					
+					<td><select value={this.state.drum15} onChange={this.onSelectDrum15.bind(this)}>{this.createSelectItemsInt()}</select></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][0]} onChange={(e)=>this.toggleDrum(15,0)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][1]} onChange={(e)=>this.toggleDrum(15,1)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][2]} onChange={(e)=>this.toggleDrum(15,2)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][3]} onChange={(e)=>this.toggleDrum(15,3)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][4]} onChange={(e)=>this.toggleDrum(15,4)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][5]} onChange={(e)=>this.toggleDrum(15,5)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][6]} onChange={(e)=>this.toggleDrum(15,6)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][7]} onChange={(e)=>this.toggleDrum(15,7)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][8]} onChange={(e)=>this.toggleDrum(15,8)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][9]} onChange={(e)=>this.toggleDrum(15,9)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][10]} onChange={(e)=>this.toggleDrum(15,10)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][11]} onChange={(e)=>this.toggleDrum(15,11)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][12]} onChange={(e)=>this.toggleDrum(15,12)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][13]} onChange={(e)=>this.toggleDrum(15,13)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][14]} onChange={(e)=>this.toggleDrum(15,14)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][15]} onChange={(e)=>this.toggleDrum(15,15)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][16]} onChange={(e)=>this.toggleDrum(15,16)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][17]} onChange={(e)=>this.toggleDrum(15,17)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][18]} onChange={(e)=>this.toggleDrum(15,18)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][19]} onChange={(e)=>this.toggleDrum(15,19)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][20]} onChange={(e)=>this.toggleDrum(15,20)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][21]} onChange={(e)=>this.toggleDrum(15,21)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][22]} onChange={(e)=>this.toggleDrum(15,22)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][23]} onChange={(e)=>this.toggleDrum(15,23)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][24]} onChange={(e)=>this.toggleDrum(15,24)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][25]} onChange={(e)=>this.toggleDrum(15,25)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][26]} onChange={(e)=>this.toggleDrum(15,26)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][27]} onChange={(e)=>this.toggleDrum(15,27)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][28]} onChange={(e)=>this.toggleDrum(15,28)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][29]} onChange={(e)=>this.toggleDrum(15,29)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][30]} onChange={(e)=>this.toggleDrum(15,30)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[15][31]} onChange={(e)=>this.toggleDrum(15,31)} /></td>					
 				</tr>
 				<tr>
-					<td><select value={this.state.selectedInstrument} onChange={this.onSelectInstrument.bind(this)}>{this.createSelectItemsInt()}</select></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][0]} onChange={(e)=>this.toggleDrum(4,0)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][1]} onChange={(e)=>this.toggleDrum(4,1)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][2]} onChange={(e)=>this.toggleDrum(4,2)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][3]} onChange={(e)=>this.toggleDrum(4,3)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][4]} onChange={(e)=>this.toggleDrum(4,4)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][5]} onChange={(e)=>this.toggleDrum(4,5)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][6]} onChange={(e)=>this.toggleDrum(4,6)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][7]} onChange={(e)=>this.toggleDrum(4,7)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][8]} onChange={(e)=>this.toggleDrum(4,8)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][9]} onChange={(e)=>this.toggleDrum(4,9)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][10]} onChange={(e)=>this.toggleDrum(4,10)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][11]} onChange={(e)=>this.toggleDrum(4,11)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][12]} onChange={(e)=>this.toggleDrum(4,12)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][13]} onChange={(e)=>this.toggleDrum(4,13)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][14]} onChange={(e)=>this.toggleDrum(4,14)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][15]} onChange={(e)=>this.toggleDrum(4,15)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][16]} onChange={(e)=>this.toggleDrum(4,16)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][17]} onChange={(e)=>this.toggleDrum(4,17)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][18]} onChange={(e)=>this.toggleDrum(4,18)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][19]} onChange={(e)=>this.toggleDrum(4,19)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][20]} onChange={(e)=>this.toggleDrum(4,20)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][21]} onChange={(e)=>this.toggleDrum(4,21)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][22]} onChange={(e)=>this.toggleDrum(4,22)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][23]} onChange={(e)=>this.toggleDrum(4,23)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][24]} onChange={(e)=>this.toggleDrum(4,24)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][25]} onChange={(e)=>this.toggleDrum(4,25)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][26]} onChange={(e)=>this.toggleDrum(4,26)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][27]} onChange={(e)=>this.toggleDrum(4,27)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][28]} onChange={(e)=>this.toggleDrum(4,28)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][29]} onChange={(e)=>this.toggleDrum(4,29)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][30]} onChange={(e)=>this.toggleDrum(4,30)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][31]} onChange={(e)=>this.toggleDrum(4,31)} /></td>					
+				<td><select value={this.state.drum16} onChange={this.onSelectDrum16.bind(this)}>{this.createSelectItemsInt()}</select></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][0]} onChange={(e)=>this.toggleDrum(16,0)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][1]} onChange={(e)=>this.toggleDrum(16,1)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][2]} onChange={(e)=>this.toggleDrum(16,2)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][3]} onChange={(e)=>this.toggleDrum(16,3)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][4]} onChange={(e)=>this.toggleDrum(16,4)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][5]} onChange={(e)=>this.toggleDrum(16,5)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][6]} onChange={(e)=>this.toggleDrum(16,6)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][7]} onChange={(e)=>this.toggleDrum(16,7)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][8]} onChange={(e)=>this.toggleDrum(16,8)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][9]} onChange={(e)=>this.toggleDrum(16,9)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][10]} onChange={(e)=>this.toggleDrum(16,10)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][11]} onChange={(e)=>this.toggleDrum(16,11)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][12]} onChange={(e)=>this.toggleDrum(16,12)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][13]} onChange={(e)=>this.toggleDrum(16,13)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][14]} onChange={(e)=>this.toggleDrum(16,14)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][15]} onChange={(e)=>this.toggleDrum(16,15)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][16]} onChange={(e)=>this.toggleDrum(16,16)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][17]} onChange={(e)=>this.toggleDrum(16,17)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][18]} onChange={(e)=>this.toggleDrum(16,18)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][19]} onChange={(e)=>this.toggleDrum(16,19)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][20]} onChange={(e)=>this.toggleDrum(16,20)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][21]} onChange={(e)=>this.toggleDrum(16,21)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][22]} onChange={(e)=>this.toggleDrum(16,22)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][23]} onChange={(e)=>this.toggleDrum(16,23)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][24]} onChange={(e)=>this.toggleDrum(16,24)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][25]} onChange={(e)=>this.toggleDrum(16,25)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][26]} onChange={(e)=>this.toggleDrum(16,26)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][27]} onChange={(e)=>this.toggleDrum(16,27)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][28]} onChange={(e)=>this.toggleDrum(16,28)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][29]} onChange={(e)=>this.toggleDrum(16,29)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][30]} onChange={(e)=>this.toggleDrum(16,30)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[16][31]} onChange={(e)=>this.toggleDrum(16,31)} /></td>					
 				</tr>
 				<tr>
-					<td><select value={this.state.selectedInstrument} onChange={this.onSelectInstrument.bind(this)}>{this.createSelectItemsInt()}</select></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][0]} onChange={(e)=>this.toggleDrum(4,0)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][1]} onChange={(e)=>this.toggleDrum(4,1)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][2]} onChange={(e)=>this.toggleDrum(4,2)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][3]} onChange={(e)=>this.toggleDrum(4,3)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][4]} onChange={(e)=>this.toggleDrum(4,4)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][5]} onChange={(e)=>this.toggleDrum(4,5)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][6]} onChange={(e)=>this.toggleDrum(4,6)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][7]} onChange={(e)=>this.toggleDrum(4,7)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][8]} onChange={(e)=>this.toggleDrum(4,8)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][9]} onChange={(e)=>this.toggleDrum(4,9)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][10]} onChange={(e)=>this.toggleDrum(4,10)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][11]} onChange={(e)=>this.toggleDrum(4,11)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][12]} onChange={(e)=>this.toggleDrum(4,12)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][13]} onChange={(e)=>this.toggleDrum(4,13)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][14]} onChange={(e)=>this.toggleDrum(4,14)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][15]} onChange={(e)=>this.toggleDrum(4,15)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][16]} onChange={(e)=>this.toggleDrum(4,16)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][17]} onChange={(e)=>this.toggleDrum(4,17)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][18]} onChange={(e)=>this.toggleDrum(4,18)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][19]} onChange={(e)=>this.toggleDrum(4,19)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][20]} onChange={(e)=>this.toggleDrum(4,20)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][21]} onChange={(e)=>this.toggleDrum(4,21)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][22]} onChange={(e)=>this.toggleDrum(4,22)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][23]} onChange={(e)=>this.toggleDrum(4,23)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][24]} onChange={(e)=>this.toggleDrum(4,24)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][25]} onChange={(e)=>this.toggleDrum(4,25)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][26]} onChange={(e)=>this.toggleDrum(4,26)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][27]} onChange={(e)=>this.toggleDrum(4,27)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][28]} onChange={(e)=>this.toggleDrum(4,28)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][29]} onChange={(e)=>this.toggleDrum(4,29)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][30]} onChange={(e)=>this.toggleDrum(4,30)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[4][31]} onChange={(e)=>this.toggleDrum(4,31)} /></td>					
+				<td><select value={this.state.drum17} onChange={this.onSelectDrum17.bind(this)}>{this.createSelectItemsInt()}</select></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][0]} onChange={(e)=>this.toggleDrum(17,0)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][1]} onChange={(e)=>this.toggleDrum(17,1)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][2]} onChange={(e)=>this.toggleDrum(17,2)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][3]} onChange={(e)=>this.toggleDrum(17,3)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][4]} onChange={(e)=>this.toggleDrum(17,4)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][5]} onChange={(e)=>this.toggleDrum(17,5)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][6]} onChange={(e)=>this.toggleDrum(17,6)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][7]} onChange={(e)=>this.toggleDrum(17,7)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][8]} onChange={(e)=>this.toggleDrum(17,8)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][9]} onChange={(e)=>this.toggleDrum(17,9)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][10]} onChange={(e)=>this.toggleDrum(17,10)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][11]} onChange={(e)=>this.toggleDrum(17,11)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][12]} onChange={(e)=>this.toggleDrum(17,12)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][13]} onChange={(e)=>this.toggleDrum(17,13)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][14]} onChange={(e)=>this.toggleDrum(17,14)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][15]} onChange={(e)=>this.toggleDrum(17,15)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][16]} onChange={(e)=>this.toggleDrum(17,16)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][17]} onChange={(e)=>this.toggleDrum(17,17)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][18]} onChange={(e)=>this.toggleDrum(17,18)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][19]} onChange={(e)=>this.toggleDrum(17,19)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][20]} onChange={(e)=>this.toggleDrum(17,20)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][21]} onChange={(e)=>this.toggleDrum(17,21)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][22]} onChange={(e)=>this.toggleDrum(17,22)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][23]} onChange={(e)=>this.toggleDrum(17,23)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][24]} onChange={(e)=>this.toggleDrum(17,24)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][25]} onChange={(e)=>this.toggleDrum(17,25)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][26]} onChange={(e)=>this.toggleDrum(17,26)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][27]} onChange={(e)=>this.toggleDrum(17,27)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][28]} onChange={(e)=>this.toggleDrum(17,28)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][29]} onChange={(e)=>this.toggleDrum(17,29)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][30]} onChange={(e)=>this.toggleDrum(17,30)} /></td>
+					<td><input type="checkbox" checked={this.state.tracks[17][31]} onChange={(e)=>this.toggleDrum(17,31)} /></td>					
 				</tr>
 			</tbody>
 		</table>
