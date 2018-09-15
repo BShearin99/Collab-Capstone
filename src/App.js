@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import Sequencer from "./Sequencer/ReactSequencer";
+import Sequencer from "./Sequencer/SequencerSection";
 import Tone from "tone";
 import "./App.css"
 import APIManager from "./APIManager"
