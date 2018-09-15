@@ -16,11 +16,11 @@ export default class Name extends Component {
 
 	render() {
 		return (
-			<React.Fragment>
+			<div className="sequencer--row">
 				{this.state.numMeasures.map(i => {
 					return <Measure beatValue={this.state.beatValue} />;
 				})}
-			</React.Fragment>
+			</div>
 		)
 	}
 }

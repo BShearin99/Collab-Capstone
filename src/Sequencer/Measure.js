@@ -17,11 +17,11 @@ export default class Measure extends Component {
 
 	render() {
 		return (
-			<React.Fragment>
+			<span className="sequencer--measure">
 				{this.state.numBeats.map(i => {
-					return (<span>{i} <Checkbox /></span>);
+					return (<Checkbox />);
 				})}
-			</React.Fragment>
+			</span>
 		)
 	}
 }
