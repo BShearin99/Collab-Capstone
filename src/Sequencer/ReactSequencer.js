@@ -1085,7 +1085,7 @@ this.setState({value: event.target.loadedSongs})
 					<td><input type="checkbox" checked={this.state.tracks[16][28]} onChange={(e)=>this.toggleDrum(16,28)} /></td>
 					<td><input type="checkbox" checked={this.state.tracks[16][29]} onChange={(e)=>this.toggleDrum(16,29)} /></td>
 					<td><input type="checkbox" checked={this.state.tracks[16][30]} onChange={(e)=>this.toggleDrum(16,30)} /></td>
-					<td><input type="checkbox" checked={this.state.tracks[16][31]} onChange={(e)=>this.toggleDrum(16,31)} /></td>					
+					<td><input type="checkbox" checked={this.state.tracks[16][31]} onChange={(e)=>this.toggleDrum(16,31)} /></td>
 				</tr>
 				<tr>
 				<td><select value={this.state.drum17} onChange={this.onSelectDrum17.bind(this)}>{this.createSelectItemsInt()}</select></td>
@@ -1141,7 +1141,7 @@ this.setState({value: event.target.loadedSongs})
 					,this.state.drumBass
 					,this.state.drumHiHat
 					,this.state.drumClap
-				]} 
+				]}
 			/>	
 		<hr/>
     </div>
