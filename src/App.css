@@ -187,7 +187,13 @@ hr {
 } */
 
 
+#root .MIDISounds, .MIDISounds * {
+	display: inline;
+}
 
+#root svg {
+	display: none;
+}
 
 
 
