@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Measure from './Measure';
+import InstrumentSelector from './InstrumentSelector'
 
 export default class Name extends Component {
 
@@ -17,6 +18,7 @@ export default class Name extends Component {
 	render() {
 		return (
 			<div className="sequencer--row">
+				<InstrumentSelector />
 				{this.state.numMeasures.map(i => {
 					return <Measure beatValue={this.state.beatValue} />;
 				})}

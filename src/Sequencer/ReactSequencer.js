@@ -161,7 +161,7 @@ class App extends Component {
 	}
 	onSelectDrumSnare(e){
 		let list=e.target;
-		let n = list.options[list.selectedIndex].getAttribute("value");		
+		let n = list.options[list.selectedIndex].getAttribute("value");
 		this.midiSounds.cacheDrum(n);
 		let me=this;
 		this.midiSounds.player.loader.waitLoad(function(){
